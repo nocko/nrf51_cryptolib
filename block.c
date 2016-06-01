@@ -8,6 +8,8 @@
 #include <stdio.h>
 
 bool block_cmp(block_t const * const a, block_t const * const b) {
+  /* Compares two blocks, return true if they are identical, else
+     false */
   for (uint_fast8_t i = 0; i < 4; i++) {
     if (a->ui32[i] != b->ui32[i]) {
       return false;
@@ -16,6 +18,7 @@ bool block_cmp(block_t const * const a, block_t const * const b) {
   return true;
 }
 
+#ifdef HOST_BUILD
 void block_print(char const * const label,
 		 block_t const * const b) {
   if (label != NULL) {
@@ -32,7 +35,10 @@ void block_print(char const * const label,
   printf("\n");
   return;
 }
+#endif /* HOST_BUILD */
+
 block_t block_xor(block_t const * const a, block_t const * const b) {
+  /* Returns XOR of two block_t */
   block_t c;
   for (uint_fast8_t i = 0; i < 4; i++) {
     c.ui32[i] = a->ui32[i] ^ b->ui32[i];
@@ -41,6 +47,7 @@ block_t block_xor(block_t const * const a, block_t const * const b) {
 }
 
 block_t block_shiftr(block_t const * const a, uint_fast8_t const num) {
+  /* Implements '>>' for block_t */
   block_t c;
   uint_fast8_t n = (num <= 8 ? num : 8);
   for (int_fast8_t i = 15; i >= 0; i--) {
@@ -55,7 +62,7 @@ block_t block_shiftr(block_t const * const a, uint_fast8_t const num) {
 }
 
 block_t block_shiftl(block_t const * const a, uint_fast8_t const num) {
-  /* Shifts block b right by num bits (where num <= 32) */
+  /* Implements '<<' for block_t */
   block_t c;
   uint_fast8_t n = (num <= 8 ? num : 8);
   for (int_fast8_t i = 0; i < 16; i++) {
