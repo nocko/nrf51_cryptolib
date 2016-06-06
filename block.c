@@ -6,28 +6,24 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
-bool block_cmp(block_t const * const a, block_t const * const b) {
+bool block_eq(uint8_t const * const a, uint8_t const * const b) {
   /* Compares two blocks, return true if they are identical, else
      false */
-  for (uint_fast8_t i = 0; i < 4; i++) {
-    if (a->ui32[i] != b->ui32[i]) {
-      return false;
-    }
-  }
-  return true;
+  return !(memcmp(a, b, 16));
 }
 
 #ifdef HOST_BUILD
 void block_print(char const * const label,
-		 block_t const * const b) {
+		 uint8_t const * const b) {
   if (label != NULL) {
   printf("\n%s: ", label);
   } else {
     printf("\n");
   }
   for(int i = 0; i < 16; i++) {
-    printf("%.2x", b->ui8[i]);
+    printf("%.2x", b[i]);
     if (!((i+1) % 4)) {
       printf(" ");
     }
@@ -37,42 +33,62 @@ void block_print(char const * const label,
 }
 #endif /* HOST_BUILD */
 
-block_t block_xor(block_t const * const a, block_t const * const b) {
-  /* Returns XOR of two block_t */
-  block_t c;
+void block_xor(uint8_t *dest, uint8_t * const a, uint8_t * const b) {
   for (uint_fast8_t i = 0; i < 4; i++) {
-    c.ui32[i] = a->ui32[i] ^ b->ui32[i];
+    *((uint32_t *)dest+i) = *((uint32_t *)a+i) ^ *((uint32_t *)b+i);
   }
-  return c;
+  return;
 }
 
-block_t block_shiftr(block_t const * const a, uint_fast8_t const num) {
-  /* Implements '>>' for block_t */
-  block_t c;
+void block_shiftr(uint8_t *dest, uint8_t * const a, uint_fast8_t num) {
   uint_fast8_t n = (num <= 8 ? num : 8);
   for (int_fast8_t i = 15; i >= 0; i--) {
     /* Shift right from LSB to MSB */
-    c.ui8[i] = a->ui8[i] >> n;
+    dest[i] = a[i] >> n;
     if (i != 0) {
-      /* If theres a more significant uint32, we need to pull in its lsb */
-      c.ui8[i] |= (a->ui8[i-1] << (8 - n));
+      dest[i] |= (a[i-1] << (8 - n));
     }
   }
-  return (num - n == 0 ? c : block_shiftr(&c, num - n));
+  if (num - n != 0) {
+    block_shiftr(dest, dest, num - n);
+  }
+  return;
 }
 
-block_t block_shiftl(block_t const * const a, uint_fast8_t const num) {
-  /* Implements '<<' for block_t */
-  block_t c;
+void block_shiftl(uint8_t *dest, uint8_t * const a, uint_fast8_t num) {
   uint_fast8_t n = (num <= 8 ? num : 8);
   for (int_fast8_t i = 0; i < 16; i++) {
-    /* Shift right from LSB to MSB */
-    c.ui8[i] = a->ui8[i] << n;
+    dest[i] = a[i] << n;
     if (i != 15) {
-      /* If theres a less significant uint32, we need to pull in its msb */
-      c.ui8[i] |= (a->ui8[i+1] >> (8 - n));
+      dest[i] |= (a[i+1] >> (8 - n));
     }
   }
-  return (num - n == 0 ? c : block_shiftl(&c, num - n));
+  if (num - n != 0) {
+    block_shiftl(dest, dest, num - n);
+  }
+  return;
  }
 
+void block_incr(uint8_t *in) {
+  for (int_fast8_t i = 15; i > 0 ; i--) {
+    uint8_t prev = in[i];
+    in[i] += 1;
+    if (in[i] > prev) {
+      /* No overflow, changes propagate no further */
+      break;
+    }
+  }
+  return;
+}
+
+void block_decr(uint8_t *in) {
+  for (int_fast8_t i = 15; i > 0 ; i--) {
+    uint8_t prev = in[i];
+    in[i] -= 1;
+    if (in[i] < prev) {
+      /* No overflow, changes propagate no further */
+      break;
+    }
+  }
+  return;
+}

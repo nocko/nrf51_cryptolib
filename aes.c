@@ -19,14 +19,14 @@ void aes128_init(uint8_t *key) {
   return;
 }
 
-block_t aes128_ecb(block_t const * const in) {
+void aes128_ecb(uint8_t *dest, uint8_t const * const in) {
 #ifdef HOST_BUILD
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
   EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, g_ecbdata.key, NULL);
 
-  int outlen, tmplen;
-  EVP_EncryptUpdate(ctx, g_ecbdata.out, &outlen, in->ui8, 16);
-  EVP_EncryptFinal_ex(ctx, g_ecbdata.out + outlen, &tmplen);
+  int outlen;//tmplen;
+  EVP_EncryptUpdate(ctx, g_ecbdata.out, &outlen, in, 16);
+  //EVP_EncryptFinal_ex(ctx, g_ecbdata.out + outlen, &tmplen);
 
   /* Why the fuck does this segfault... I don't care. It's for testing
      on the host only. Let it leak */
@@ -37,5 +37,6 @@ block_t aes128_ecb(block_t const * const in) {
   while (!NRF_ECB->EVENTS_ENDECB);
   NRF_ECB->EVENTS_ENDECB = 0;
 #endif /* HOST_BUILD */
-  return *((block_t *)g_ecbdata.out);
+  memmove(dest, g_ecbdata.out, 16);
+  return;
 }

@@ -5,7 +5,7 @@
 
 #include "block.h"
 
-block_t cmac_aes128(uint8_t *, size_t);
-void    cmac_aes128_expand_key(block_t *, block_t *);
-void    cmac_aes128_init(block_t *);
-void    cmac_truncate_tag(uint8_t *, block_t *, uint_fast8_t);
+void cmac_aes128(uint8_t *, uint8_t *, size_t, uint_fast8_t);
+void cmac_aes128_expand_key(uint8_t const * const, uint8_t *, uint8_t *);
+void cmac_aes128_init(uint8_t *);
+void cmac_get_subkeys(uint8_t *);

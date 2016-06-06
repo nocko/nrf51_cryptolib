@@ -3,14 +3,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef union {
-  uint32_t ui32[4];
-  uint8_t ui8[16];
-} block_t;
-
-bool    block_cmp(block_t const * const, block_t const * const);
-void    block_print(char const * const, block_t const * const);
-block_t block_shiftl(block_t const * const, uint_fast8_t);
-block_t block_shiftr(block_t const * const, uint_fast8_t);
-block_t block_xor(block_t const * const, block_t const * const);
+bool block_eq(uint8_t const * const, uint8_t const * const);
+void block_print(char const * const, uint8_t const * const);
+void block_shiftl(uint8_t *, uint8_t * const, uint_fast8_t);
+void block_shiftr(uint8_t *, uint8_t * const, uint_fast8_t);
+void block_xor(uint8_t *, uint8_t * const, uint8_t * const);
 

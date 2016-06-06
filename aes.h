@@ -12,4 +12,4 @@ typedef struct {
 
 
 void aes128_init(uint8_t *);
-block_t aes128_ecb(block_t const * const);
+void aes128_ecb(uint8_t *, uint8_t const * const);
