@@ -81,3 +81,5 @@ debug-gdbinit:
 test:
 	gcc -g -std=gnu99 -Wall -Werror -I.. -DHOST_BUILD -lcrypto block.c aes.c cmac.c tests/test_cmac.c -o tests/test_cmac
 	./tests/test_cmac
+	gcc -g -std=gnu99 -Wall -Werror -I.. -DHOST_BUILD -lcrypto block.c aes.c ctr.c tests/test_ctr.c -o tests/test_ctr
+	./tests/test_ctr
