@@ -73,7 +73,7 @@ void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len, uint_fast8_t tag_l
   if (!last_block_complete) {
     /* Padding is single 1 bit, run out on 0s.. find the next byte,
        set it to 0b1000000 */
-    alt_msg[msg_len] = 0x80;   
+    alt_msg[msg_len] = 0x80;
     block_xor(last_block, last_block, g_k2);
   } else {
     block_xor(last_block, last_block, g_k1);
