@@ -1,7 +1,7 @@
 # List all source files the application uses.
 APPLICATION_SRCS = $(notdir $(wildcard ./*.c))
 
-PROJECT_NAME = cmac_aes128_test
+PROJECT_NAME = nrf51_cryptolib
 VERSION = 0.1
 
 DEVICE = NRF51

@@ -1,10 +1,9 @@
-# CMAC-AES128 for nRF51
+# Cryptography Library for nRF51
 
 - Uses AES-ECB hardware peripheral
-- Includes target test app that runs the NIST 800-38B Examples
-- Includes host test app that checks the NIST 800-38B Examples
-  (requires OpenSSL)
-
+- Includes target test app that runs the EAX test vectors
+- Includes host test app that verifies the test vectors from NIST
+  800-38B, EAX papes, NIST 800-38A F5.1 (requires OpenSSL)
 
 ## Usage
 
@@ -13,8 +12,9 @@
    
 2. Edit main.c:
 
->      #define ERROR_LED_PIN 12
->      #define ERROR_LED_ACTIVE LOW
+>      #define SUCCESS_LED 10
+>      #define ERROR_LED 12
+>      #define LED_ACTIVE LOW
 
 3. `make`: 
 
@@ -23,4 +23,4 @@
 
 4. `make test`: 
 
-	Fakes AES128 peripheral using openssl, then runs tests on host.
+	Fakes ECB peripheral using openssl, then runs tests on host.
