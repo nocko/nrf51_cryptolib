@@ -78,10 +78,12 @@ debug-gdbinit:
 
 .PHONY: flash flash-softdevice erase-all startdebug
 
+TEST_CFLAGS=-std=gnu99 -g -Wall -Werror -I.. -DHOST_BUILD
+
 test:
-	gcc -g -std=gnu99 -Wall -Werror -I.. -DHOST_BUILD -lcrypto block.c aes.c cmac.c tests/test_cmac.c -o tests/test_cmac
+	gcc $(TEST_CFLAGS) -lcrypto block.c aes.c cmac.c tests/test_cmac.c -o tests/test_cmac
 	./tests/test_cmac
-	gcc -g -std=gnu99 -Wall -Werror -I.. -DHOST_BUILD -lcrypto block.c aes.c ctr.c tests/test_ctr.c -o tests/test_ctr
+	gcc $(TEST_CFLAGS) -lcrypto block.c aes.c ctr.c tests/test_ctr.c -o tests/test_ctr
 	./tests/test_ctr
-	gcc -g -std=gnu99 -Wall -Werror -I.. -DHOST_BUILD -lcrypto block.c aes.c ctr.c cmac.c eax.c tests/test_eax.c -o tests/test_eax
+	gcc $(TEST_CFLAGS) -lcrypto block.c aes.c ctr.c cmac.c eax.c tests/test_eax.c -o tests/test_eax
 	./tests/test_eax

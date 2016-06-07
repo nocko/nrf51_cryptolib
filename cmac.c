@@ -25,8 +25,10 @@ void cmac_get_subkeys(uint8_t *dest) {
 
 void cmac_aes128_init(uint8_t *key) {
   /* Initialize AES engine and cache subkeys */
-  aes128_init(key);
-  cmac_aes128_expand_key(key, g_k1, g_k2);
+  if (key != NULL) {
+    aes128_init(key);
+    cmac_aes128_expand_key(key, g_k1, g_k2);
+  }
 }   
 
 void cmac_aes128_expand_key(uint8_t const * const key, uint8_t *k1, uint8_t *k2) {

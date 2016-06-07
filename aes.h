@@ -13,3 +13,4 @@ typedef struct {
 
 void aes128_init(uint8_t *);
 void aes128_ecb(uint8_t *, uint8_t const * const);
+void aes_dump_state(void);

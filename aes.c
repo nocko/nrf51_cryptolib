@@ -4,7 +4,7 @@
 #ifndef HOST_BUILD
 #include "nrf.h"
 #else
-#include <openssl/evp.h>
+#include <openssl/aes.h>
 #endif /* HOST_BUILD */
 
 #include <string.h>
@@ -12,25 +12,20 @@
 static ecbdata_t g_ecbdata;
 
 void aes128_init(uint8_t *key) {
-  memmove(g_ecbdata.key, key, 16);
+  if (key != NULL) {
+    memmove(g_ecbdata.key, key, 16);
 #ifndef HOST_BUILD
-  NRF_ECB->ECBDATAPTR = (uint32_t)&g_ecbdata;
+    NRF_ECB->ECBDATAPTR = (uint32_t)&g_ecbdata;
 #endif /* HOST_BUILD */
+  }
   return;
 }
 
 void aes128_ecb(uint8_t *dest, uint8_t const * const in) {
 #ifdef HOST_BUILD
-  EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, g_ecbdata.key, NULL);
-
-  int outlen;//tmplen;
-  EVP_EncryptUpdate(ctx, g_ecbdata.out, &outlen, in, 16);
-  //EVP_EncryptFinal_ex(ctx, g_ecbdata.out + outlen, &tmplen);
-
-  /* Why the fuck does this segfault... I don't care. It's for testing
-     on the host only. Let it leak */
-  //EVP_CIPHER_CTX_free(ctx);
+  AES_KEY key;
+  AES_set_encrypt_key(g_ecbdata.key, 128, &key);
+  AES_encrypt(in, g_ecbdata.out, &key);
 #else
   memmove(g_ecbdata.in, in, 16);
   NRF_ECB->TASKS_STARTECB = 1;
@@ -40,3 +35,9 @@ void aes128_ecb(uint8_t *dest, uint8_t const * const in) {
   memmove(dest, g_ecbdata.out, 16);
   return;
 }
+
+#ifdef HOST_BUILD
+void aes_dump_state(void) {
+  block_print("Key", g_ecbdata.key);
+}
+#endif /* HOST_BUILD */

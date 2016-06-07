@@ -8,17 +8,11 @@
 #include <stdio.h>
 #include <string.h>
 
-bool block_eq(uint8_t const * const a, uint8_t const * const b) {
-  /* Compares two blocks, return true if they are identical, else
-     false */
-  return !(memcmp(a, b, 16));
-}
-
 #ifdef HOST_BUILD
 void block_print(char const * const label,
 		 uint8_t const * const b) {
   if (label != NULL) {
-  printf("\n%s: ", label);
+  printf("%s: ", label);
   } else {
     printf("\n");
   }
@@ -30,6 +24,18 @@ void block_print(char const * const label,
   }
   printf("\n");
   return;
+}
+
+void block_print_bytes(char const * const label,
+		       uint8_t const * const b, uint32_t num_bytes) {
+  printf("%s: ", label);
+  for(int i = 0; i < num_bytes; i++) {
+    printf("%.2x", b[i]);
+    if (!((i+1) % 4)) {
+      printf(" ");
+    }
+  }
+  printf("\n");
 }
 #endif /* HOST_BUILD */
 
