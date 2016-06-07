@@ -12,6 +12,7 @@ SDK_PATH = $(HOME)/devel/nrf-sdk/10.0/
 
 TEMPLATE_PATH = ./template/
 
+HOST_CC = gcc # Used when running tests on host
 CFLAGS = -Os -Wall -Werror -flto -g
 LDFLAGS = -Os -flto -g
 
