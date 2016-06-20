@@ -11,7 +11,9 @@ void aes128_eax_init(uint8_t *key, uint8_t *nonce) {
     if (nonce != NULL) {
         memcpy(g_nonce, nonce, 16);
     }
-    cmac_aes128_init(key);
+    if (key != NULL) {
+      cmac_aes128_init(key);
+    }
     aes128_ctr_init(key, nonce);
     return;
 }

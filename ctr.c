@@ -9,7 +9,9 @@ void aes128_ctr_init(uint8_t *key, uint8_t *counter) {
     if (counter != NULL) {
         memcpy(g_counter, counter, 16);
     }
-    aes128_init(key);
+    if (key != NULL) {
+      aes128_init(key);
+    }
 }
 
 void aes128_ctr_evolve_counter(void) {
