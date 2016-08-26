@@ -41,12 +41,8 @@ void ckdf_expand(uint8_t *okm, uint8_t *prk, uint8_t *info,
       memcpy(initial, info, info_len);
       cmac_aes128(t, initial, info_len+1, 16);
     } else {
-      block_print_bytes("IN", t, sizeof(t));
       cmac_aes128(t, t, sizeof(t), 16);
-      block_print_bytes("OUT", t, sizeof(t));
     }
-    printf("T%d: ", i+1);
-    block_print(NULL, t);
     if (i == num_blocks - 1 && remainder) {
       memcpy(okm+16*i, t, remainder);
     } else {
