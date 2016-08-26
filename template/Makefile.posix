@@ -78,7 +78,7 @@ debug-gdbinit:
 
 .PHONY: flash flash-softdevice erase-all startdebug
 
-TEST_CFLAGS=-std=gnu99 -g -Wall -Werror -I.. -DHOST_BUILD -fsanitize=address -Os
+TEST_CFLAGS=-std=gnu99 -g -Wall -Werror -I.. -DHOST_BUILD -Os
 
 test:
 	$(HOST_CC) $(TEST_CFLAGS) -lcrypto block.c aes.c cmac.c tests/test_cmac.c -o tests/test_cmac
@@ -87,3 +87,5 @@ test:
 	./tests/test_ctr
 	$(HOST_CC) $(TEST_CFLAGS) -lcrypto block.c aes.c ctr.c cmac.c eax.c tests/test_eax.c -o tests/test_eax
 	./tests/test_eax
+	$(HOST_CC) $(TEST_CFLAGS) -lcrypto block.c aes.c cmac.c ckdf.c tests/test_ckdf.c -o tests/test_ckdf
+	./tests/test_ckdf
