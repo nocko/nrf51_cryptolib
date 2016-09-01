@@ -12,7 +12,7 @@
 
 #include "cmac.h"
 
-void ckdf_extract(uint8_t *prk, uint8_t *salt, uint8_t *ikm,
+void ckdf_extract(uint8_t *prk, const uint8_t *salt, const uint8_t *ikm,
 		  uint32_t ikm_len) {
   uint8_t zeros[16] = {0};
   if (salt == NULL) {
@@ -20,7 +20,7 @@ void ckdf_extract(uint8_t *prk, uint8_t *salt, uint8_t *ikm,
   } else {
     cmac_aes128_init(salt);
   }
-  cmac_aes128(prk, ikm, ikm_len, 16);
+  cmac_aes128(prk, (uint8_t*) ikm, ikm_len, 16);
 }
 
 void ckdf_expand(uint8_t *okm, uint8_t *prk, uint8_t *info,

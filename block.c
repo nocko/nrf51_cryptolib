@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "uart.h"
 
 #ifdef HOST_BUILD
 void block_print(char const *const label, uint8_t const *const b) {
@@ -24,19 +25,20 @@ void block_print(char const *const label, uint8_t const *const b) {
     printf("\n");
     return;
 }
+#endif /* HOST_BUILD */
 
 void block_print_bytes(char const *const label, uint8_t const *const b,
                        uint32_t num_bytes) {
-    printf("%s: ", label);
+    debug_printf("%s: ", label);
     for (int i = 0; i < num_bytes; i++) {
-        printf("%.2x", b[i]);
+        debug_printf("%.2x", b[i]);
         if (!((i + 1) % 4)) {
-            printf(" ");
+            debug_printf(" ");
         }
     }
-    printf("\n");
+    debug_printf("\n");
 }
-#endif /* HOST_BUILD */
+
 
 void block_xor(uint8_t *dest, uint8_t *const a, uint8_t *const b) {
     for (uint_fast8_t i = 0; i < 4; i++) {

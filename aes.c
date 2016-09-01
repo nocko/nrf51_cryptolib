@@ -11,7 +11,7 @@
 
 static ecbdata_t g_ecbdata;
 
-void aes128_init(uint8_t *key) {
+void aes128_init(const uint8_t *key) {
     if (key != NULL) {
         memmove(g_ecbdata.key, key, 16);
 #ifndef HOST_BUILD

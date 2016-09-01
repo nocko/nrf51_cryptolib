@@ -22,7 +22,7 @@ void cmac_get_subkeys(uint8_t *dest) {
 }
 #endif /* HOST_BUILD */
 
-void cmac_aes128_init(uint8_t *key) {
+void cmac_aes128_init(const uint8_t *key) {
     /* Initialize AES engine and cache subkeys */
     if (key != NULL) {
         aes128_init(key);
