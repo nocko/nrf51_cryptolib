@@ -1,42 +1,33 @@
 /* Utility functions for manipulating block_t structures; 128bit
    blocks of data for AES & CMAC */
 
-#include "block.h"
+
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "uart.h"
 
-#ifdef HOST_BUILD
+#include "config.h"
+#include "block.h"
+
 void block_print(char const *const label, uint8_t const *const b) {
-    if (label != NULL) {
-        printf("%s: ", label);
-    } else {
-        printf("\n");
-    }
-    for (int i = 0; i < 16; i++) {
+  block_print_bytes(label, b, 16);
+  return;
+}
+
+void block_print_bytes(char const *const label, uint8_t const *const b,
+                       uint32_t num_bytes) {
+#if defined (HOST_BUILD) || defined (DEBUG_UART)
+    printf("%s: ", label);
+    for (int i = 0; i < num_bytes; i++) {
         printf("%.2x", b[i]);
         if (!((i + 1) % 4)) {
             printf(" ");
         }
     }
-    printf("\n");
-    return;
-}
-#endif /* HOST_BUILD */
-
-void block_print_bytes(char const *const label, uint8_t const *const b,
-                       uint32_t num_bytes) {
-    debug_printf("%s: ", label);
-    for (int i = 0; i < num_bytes; i++) {
-        debug_printf("%.2x", b[i]);
-        if (!((i + 1) % 4)) {
-            debug_printf(" ");
-        }
-    }
-    debug_printf("\n");
+    printf("\r\n");
+#endif
 }
 
 

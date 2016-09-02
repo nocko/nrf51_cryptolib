@@ -7,7 +7,7 @@
 
 static uint8_t g_nonce[16] = {0};
 
-void aes128_eax_init(uint8_t *key, uint8_t *nonce) {
+void aes128_eax_init(const uint8_t *key, uint8_t *nonce) {
     if (nonce != NULL) {
         memcpy(g_nonce, nonce, 16);
     }
