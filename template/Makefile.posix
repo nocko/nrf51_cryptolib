@@ -78,7 +78,7 @@ debug-gdbinit:
 
 .PHONY: flash flash-softdevice erase-all startdebug
 
-TEST_CFLAGS=-std=gnu99 -g -Wall -Werror -I.. -DHOST_BUILD -Os
+TEST_CFLAGS=-std=gnu99 -g -Wall -Werror -I.. -I . -DHOST_BUILD -Os
 
 test:
 	$(HOST_CC) $(TEST_CFLAGS) -lcrypto block.c aes.c cmac.c tests/test_cmac.c -o tests/test_cmac

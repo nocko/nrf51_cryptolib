@@ -8,18 +8,21 @@
 #include <stdio.h>
 #include <string.h>
 
+#if __has_include("config.h")
 #include "config.h"
+#endif
 #include "block.h"
 
-void block_print(char const *const label, uint8_t const *const b) {
+#if defined (HOST_BUILD) || defined (DEBUG_UART)
+void block_print(char const *const label, void const *const b) {
   block_print_bytes(label, b, 16);
   return;
 }
 
-void block_print_bytes(char const *const label, uint8_t const *const b,
+void block_print_bytes(char const *const label, void const *const v,
                        uint32_t num_bytes) {
-#if defined (HOST_BUILD) || defined (DEBUG_UART)
-    printf("%s: ", label);
+  const uint8_t *b = v;
+  printf("%s: ", label);
     for (int i = 0; i < num_bytes; i++) {
         printf("%.2x", b[i]);
         if (!((i + 1) % 4)) {
@@ -27,9 +30,8 @@ void block_print_bytes(char const *const label, uint8_t const *const b,
         }
     }
     printf("\r\n");
-#endif
 }
-
+#endif
 
 void block_xor(uint8_t *dest, uint8_t *const a, uint8_t *const b) {
     for (uint_fast8_t i = 0; i < 4; i++) {
