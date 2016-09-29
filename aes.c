@@ -29,8 +29,9 @@ void aes128_ecb(uint8_t *dest, uint8_t const *const in) {
 #else
     memmove(g_ecbdata.in, in, 16);
     NRF_ECB->TASKS_STARTECB = 1;
-    while (!NRF_ECB->EVENTS_ENDECB)
+    while (!NRF_ECB->EVENTS_ENDECB) {
         ;
+    }
     NRF_ECB->EVENTS_ENDECB = 0;
 #endif /* HOST_BUILD */
     memmove(dest, g_ecbdata.out, 16);

@@ -1,8 +1,6 @@
 /* Utility functions for manipulating block_t structures; 128bit
    blocks of data for AES & CMAC */
 
-
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -13,16 +11,16 @@
 #endif
 #include "block.h"
 
-#if defined (HOST_BUILD) || defined (DEBUG_UART)
+#if defined(HOST_BUILD) || defined(DEBUG_UART)
 void block_print(char const *const label, void const *const b) {
-  block_print_bytes(label, b, 16);
-  return;
+    block_print_bytes(label, b, 16);
+    return;
 }
 
 void block_print_bytes(char const *const label, void const *const v,
                        uint32_t num_bytes) {
-  const uint8_t *b = v;
-  printf("%s: ", label);
+    const uint8_t *b = v;
+    printf("%s: ", label);
     for (int i = 0; i < num_bytes; i++) {
         printf("%.2x", b[i]);
         if (!((i + 1) % 4)) {

@@ -10,7 +10,7 @@ void aes128_ctr_init(uint8_t *key, uint8_t *counter) {
         memcpy(g_counter, counter, 16);
     }
     if (key != NULL) {
-      aes128_init(key);
+        aes128_init(key);
     }
 }
 

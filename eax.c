@@ -12,7 +12,7 @@ void aes128_eax_init(const uint8_t *key, uint8_t *nonce) {
         memcpy(g_nonce, nonce, 16);
     }
     if (key != NULL) {
-      cmac_aes128_init(key);
+        cmac_aes128_init(key);
     }
     aes128_ctr_init(key, nonce);
     return;

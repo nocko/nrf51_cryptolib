@@ -16,8 +16,9 @@ uint8_t rng_byte(void) {
 void rng_bytes(uint8_t *out, uint32_t num_bytes) {
     NRF_RNG->TASKS_START = 1;
     for (uint32_t i = 0; i < num_bytes; i++) {
-        while (!NRF_RNG->EVENTS_VALRDY)
+        while (!NRF_RNG->EVENTS_VALRDY) {
             ;
+        }
         out[i] = (uint8_t)NRF_RNG->VALUE;
         NRF_RNG->EVENTS_VALRDY = 0;
     }
