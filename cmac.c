@@ -59,16 +59,17 @@ static void cmac_truncate(uint8_t *dest, uint8_t *tag, uint_fast8_t tag_len) {
 void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len,
                  uint_fast8_t tag_len) {
     /* Simulate ceiling integer division by adding a block if remainder */
-    size_t num_blocks = msg_len / 16 + (msg_len % 16 ? 1 : 0);
-    bool last_block_complete = !(msg_len % 16 ? 1 : 0);
+    size_t num_blocks = msg_len >> 4 + (msg_len & 15 ? 1 : 0);
+    bool last_block_complete = !(msg_len & 15 ? 1 : 0);
     if (msg_len == 0) {
         num_blocks = 1;
         last_block_complete = false;
     }
 
-    uint8_t alt_msg[num_blocks * 16],
-        *last_block = &alt_msg[(num_blocks - 1) * 16];
-    memset(alt_msg, 0, num_blocks * 16);
+    size_t padded_len = num_blocks << 4;
+    uint8_t alt_msg[padded_len],
+        *last_block = &alt_msg[padded_len - 16];
+    memset(alt_msg+msg_len, 0, padded_len - msg_len);
     memcpy(alt_msg, msg, msg_len);
 
     if (!last_block_complete) {
@@ -83,7 +84,7 @@ void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len,
     uint8_t *x = (uint8_t *)zeros, y[16] = {0};
 
     for (uint32_t i = 0; i < num_blocks; i++) {
-        uint8_t *block = &alt_msg[i * 16];
+        uint8_t *block = &alt_msg[i << 4];
         block_xor(y, x, block);
         x = aes128_ecb(y);
     }
