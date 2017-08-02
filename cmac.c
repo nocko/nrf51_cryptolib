@@ -33,10 +33,9 @@ void cmac_aes128_init(const uint8_t *key) {
 void cmac_aes128_expand_key(uint8_t const *const key, uint8_t *k1,
                             uint8_t *k2) {
     /* Generate two required subkeys according to NIST 800-38B */
-    uint8_t l[16] = {0},
-            Rb[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x87};
+    uint8_t Rb[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x87};
 
-    aes128_ecb(l, zeros);
+    uint8_t *l = aes128_ecb(zeros);
     if ((l[0] >> 7) == 0) {
         block_shiftl(k1, l, 1);
     } else {
@@ -70,7 +69,7 @@ void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len,
     uint8_t alt_msg[num_blocks * 16],
         *last_block = &alt_msg[(num_blocks - 1) * 16];
     memset(alt_msg, 0, num_blocks * 16);
-    memmove(alt_msg, msg, msg_len);
+    memcpy(alt_msg, msg, msg_len);
 
     if (!last_block_complete) {
         /* Padding is single 1 bit, run out on 0s.. find the next byte,
@@ -81,12 +80,12 @@ void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len,
         block_xor(last_block, last_block, g_k1);
     }
 
-    uint8_t x[16] = {0}, y[16] = {0};
+    uint8_t *x = (uint8_t *)zeros, y[16] = {0};
 
     for (uint32_t i = 0; i < num_blocks; i++) {
         uint8_t *block = &alt_msg[i * 16];
         block_xor(y, x, block);
-        aes128_ecb(x, y);
+        x = aes128_ecb(y);
     }
     cmac_truncate(dest, x, tag_len);
     return;

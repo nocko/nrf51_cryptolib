@@ -31,7 +31,7 @@ void block_print_bytes(char const *const label, void const *const v,
 }
 #endif
 
-void block_xor(uint8_t *dest, uint8_t *const a, uint8_t *const b) {
+void block_xor(uint8_t *dest, uint8_t const *const a, uint8_t const *const b) {
     for (uint_fast8_t i = 0; i < 4; i++) {
         *((uint32_t *)dest + i) = *((uint32_t *)a + i) ^ *((uint32_t *)b + i);
     }

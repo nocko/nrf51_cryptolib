@@ -21,21 +21,20 @@ void aes128_init(const uint8_t *key) {
     return;
 }
 
-void aes128_ecb(uint8_t *dest, uint8_t const *const in) {
+uint8_t *aes128_ecb(uint8_t const *const in) {
 #ifdef HOST_BUILD
     AES_KEY key;
     AES_set_encrypt_key(g_ecbdata.key, 128, &key);
     AES_encrypt(in, g_ecbdata.out, &key);
 #else
-    memmove(g_ecbdata.in, in, 16);
+    memcpy(g_ecbdata.in, in, 16);
     NRF_ECB->TASKS_STARTECB = 1;
     while (!NRF_ECB->EVENTS_ENDECB) {
         ;
     }
     NRF_ECB->EVENTS_ENDECB = 0;
 #endif /* HOST_BUILD */
-    memmove(dest, g_ecbdata.out, 16);
-    return;
+    return g_ecbdata.out;
 }
 
 #ifdef HOST_BUILD

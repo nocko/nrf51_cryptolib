@@ -20,15 +20,15 @@ void aes128_ctr_evolve_counter(void) {
 }
 
 void aes128_ctr(uint8_t *dest, uint8_t *msg, uint32_t msg_len) {
-    uint8_t buffer[16];
+    uint8_t *buffer;
     uint32_t num_blocks = msg_len / 16;
     for (uint32_t i = 0; i < num_blocks; i++) {
-        aes128_ecb(buffer, g_counter);
+        buffer = aes128_ecb(g_counter);
         aes128_ctr_evolve_counter();
         block_xor(dest + (i * 16), msg + (i * 16), buffer);
     }
     if (msg_len % 16) {
-        aes128_ecb(buffer, g_counter);
+        buffer = aes128_ecb(g_counter);
         for (uint8_t i = 0; i < msg_len % 16; i++) {
             dest[num_blocks * 16 + i] = msg[num_blocks * 16 + i] ^ buffer[i];
         }
