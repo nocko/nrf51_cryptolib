@@ -59,7 +59,7 @@ static void cmac_truncate(uint8_t *dest, uint8_t *tag, uint_fast8_t tag_len) {
 void cmac_aes128(uint8_t *dest, uint8_t *msg, size_t msg_len,
                  uint_fast8_t tag_len) {
     /* Simulate ceiling integer division by adding a block if remainder */
-    size_t num_blocks = msg_len >> 4 + (msg_len & 15 ? 1 : 0);
+    size_t num_blocks = (msg_len >> 4) + (msg_len & 15 ? 1 : 0);
     bool last_block_complete = !(msg_len & 15 ? 1 : 0);
     if (msg_len == 0) {
         num_blocks = 1;
