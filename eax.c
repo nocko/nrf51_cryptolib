@@ -31,6 +31,29 @@ static void eax_omac(uint8_t *dest, uint8_t *msg, uint32_t msg_len,
     return;
 }
 
+void aes128_eax_cache_ad(uint8_t *dest, uint8_t *header, uint32_t header_len,
+			 uint8_t *msg, uint32_t msg_len, uint_fast8_t tag_len) {
+    uint8_t nonce_cmac[16], ciphertext_cmac[16],
+        ciphertext[msg_len];
+
+    static uint8_t header_cmac[16];
+    static bool header_cached = false;
+
+    if (!header_cached) {
+	eax_omac(header_cmac, header, header_len, 1);
+	header_cached = true;
+    }
+    eax_omac(nonce_cmac, g_nonce, 16, 0);
+    aes128_ctr_init(NULL, nonce_cmac);
+    aes128_ctr(ciphertext, msg, msg_len);
+    eax_omac(ciphertext_cmac, ciphertext, msg_len, 2);
+    block_xor(nonce_cmac, nonce_cmac, header_cmac);
+    block_xor(nonce_cmac, nonce_cmac, ciphertext_cmac);
+    memcpy(dest, ciphertext, msg_len);
+    memcpy(dest + msg_len, nonce_cmac, tag_len);
+    return;
+}
+
 void aes128_eax(uint8_t *dest, uint8_t *header, uint32_t header_len,
                 uint8_t *msg, uint32_t msg_len, uint_fast8_t tag_len) {
     uint8_t nonce_cmac[16], header_cmac[16], ciphertext_cmac[16],
