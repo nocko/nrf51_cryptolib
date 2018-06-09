@@ -1,3 +1,5 @@
+# This repo has moved [here](https://bitbucket.org/nocko/nrf51_cryptolib)
+
 # Cryptography Library for nRF51
 
 - Uses AES-ECB hardware peripheral
